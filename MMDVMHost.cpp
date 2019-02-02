@@ -578,22 +578,6 @@ int CMMDVMHost::run()
 		pocsagTimer.start();
 	}
 
-	bool remoteControlEnabled = m_conf.getRemoteControlEnabled();
-	if (remoteControlEnabled) {
-		unsigned int port = m_conf.getRemoteControlPort();
-
-		LogInfo("Remote Control Parameters");
-		LogInfo("    Port: %u", port);
-
-		m_remoteControl = new CRemoteControl(port);
-
-		ret = m_remoteControl->open();
-		if (!ret) {
-			delete m_remoteControl;
-			m_remoteControl = NULL;
-		}
-	}
-
 	setMode(MODE_IDLE);
 
 	LogMessage("MMDVMHost-%s is running", VERSION);
@@ -1236,7 +1220,7 @@ bool CMMDVMHost::createDMRNetwork()
 	std::string url          = m_conf.getURL();
 
 	LogInfo("Info Parameters");
-	LogInfo("    Callsign: %s", m_callsign.c_str());
+	LogInfo("    Callsign: %s%s", m_callsign.c_str(), m_suffixdmr.c_str());
 	LogInfo("    RX Frequency: %uHz", rxFrequency);
 	LogInfo("    TX Frequency: %uHz", txFrequency);
 	LogInfo("    Power: %uW", power);
@@ -1247,7 +1231,8 @@ bool CMMDVMHost::createDMRNetwork()
 	LogInfo("    Description: \"%s\"", description.c_str());
 	LogInfo("    URL: \"%s\"", url.c_str());
 
-	m_dmrNetwork->setConfig(m_callsign, rxFrequency, txFrequency, power, colorCode, latitude, longitude, height, location, description, url);
+	m_suffixdmr = m_callsign + m_suffixdmr;
+	m_dmrNetwork->setConfig(m_suffixdmr, rxFrequency, txFrequency, power, colorCode, latitude, longitude, height, location, description, url);
 
 	bool ret = m_dmrNetwork->open();
 	if (!ret) {
@@ -1407,11 +1392,14 @@ void CMMDVMHost::readParams()
 	m_pocsagEnabled = m_conf.getPOCSAGEnabled();
 	m_duplex        = m_conf.getDuplex();
 	m_callsign      = m_conf.getCallsign();
+	m_suffixdmr     = m_conf.getSuffixDmr();
 	m_id            = m_conf.getId();
 	m_timeout       = m_conf.getTimeout();
 
 	LogInfo("General Parameters");
 	LogInfo("    Callsign: %s", m_callsign.c_str());
+	if(m_suffixdmr != "")
+		LogInfo("    SuffixDmr: %s", m_suffixdmr.c_str());
 	LogInfo("    Id: %u", m_id);
 	LogInfo("    Duplex: %s", m_duplex ? "yes" : "no");
 	LogInfo("    Timeout: %us", m_timeout);

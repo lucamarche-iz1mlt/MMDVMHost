@@ -32,6 +32,7 @@ public:
 
   // The General section
   std::string  getCallsign() const;
+  std::string  getSuffixDmr() const;
   unsigned int getId() const;
   unsigned int getTimeout() const;
   bool         getDuplex() const;
@@ -280,6 +281,7 @@ public:
 private:
   std::string  m_file;
   std::string  m_callsign;
+  std::string  m_suffixdmr;
   unsigned int m_id;
   unsigned int m_timeout;
   bool         m_duplex;

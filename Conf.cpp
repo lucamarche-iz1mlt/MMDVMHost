@@ -63,6 +63,7 @@ enum SECTION {
 CConf::CConf(const std::string& file) :
 m_file(file),
 m_callsign(),
+m_suffixdmr(),
 m_id(0U),
 m_timeout(120U),
 m_duplex(true),
@@ -358,7 +359,9 @@ bool CConf::read()
 			for (unsigned int i = 0U; value[i] != 0; i++)
 				value[i] = ::toupper(value[i]);
 			m_cwIdCallsign = m_callsign = value;
-		} else if (::strcmp(key, "Id") == 0)
+		} else if (::strcmp(key, "SuffixDMR") == 0)
+			m_suffixdmr = value;
+		else if (::strcmp(key, "Id") == 0)
 			m_id = m_p25Id = m_dmrId = (unsigned int)::atoi(value);
 		else if (::strcmp(key, "Timeout") == 0)
 			m_timeout = (unsigned int)::atoi(value);
@@ -834,6 +837,11 @@ bool CConf::read()
 std::string CConf::getCallsign() const
 {
 	return m_callsign;
+}
+
+std::string CConf::getSuffixDmr() const
+{
+	return m_suffixdmr;
 }
 
 unsigned int CConf::getId() const

@@ -97,6 +97,7 @@ private:
   CDMRLookup*     m_dmrLookup;
   CNXDNLookup*    m_nxdnLookup;
   std::string     m_callsign;
+  std::string     m_suffixdmr;
   unsigned int    m_id;
   std::string     m_cwCallsign;
   bool            m_lockFileEnabled;
