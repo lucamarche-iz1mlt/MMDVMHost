@@ -131,7 +131,7 @@ m_dstarErrorReply(true),
 m_dstarRemoteGateway(false),
 m_dstarModeHang(10U),
 m_dmrEnabled(false),
-m_dmrBeacons(false),
+m_dmrBeacons(DMR_BEACONS_OFF),
 m_dmrBeaconInterval(60U),
 m_dmrBeaconDuration(3U),
 m_dmrId(0U),
@@ -147,6 +147,7 @@ m_dmrSlot2TGWhiteList(),
 m_dmrCallHang(10U),
 m_dmrTXHang(4U),
 m_dmrModeHang(10U),
+m_dmrOVCM(DMR_OVCM_OFF),
 m_fusionEnabled(false),
 m_fusionLowDeviation(false),
 m_fusionRemoteGateway(false),
@@ -238,6 +239,7 @@ m_oledBrightness(0U),
 m_oledInvert(false),
 m_oledScroll(false),
 m_oledRotate(false),
+m_oledLogoScreensaver(true),
 m_lcdprocAddress(),
 m_lcdprocPort(0U),
 m_lcdprocLocalPort(0U),
@@ -531,10 +533,11 @@ bool CConf::read()
 		if (::strcmp(key, "Enable") == 0)
 			m_dmrEnabled = ::atoi(value) == 1;
 		else if (::strcmp(key, "Beacons") == 0)
-			m_dmrBeacons = ::atoi(value) == 1;
-		else if (::strcmp(key, "BeaconInterval") == 0)
+			m_dmrBeacons = ::atoi(value) == 1 ? DMR_BEACONS_NETWORK : DMR_BEACONS_OFF;
+		else if (::strcmp(key, "BeaconInterval") == 0) {
+			m_dmrBeacons = m_dmrBeacons != DMR_BEACONS_OFF ? DMR_BEACONS_TIMED : DMR_BEACONS_OFF;
 			m_dmrBeaconInterval = (unsigned int)::atoi(value);
-		else if (::strcmp(key, "BeaconDuration") == 0)
+		} else if (::strcmp(key, "BeaconDuration") == 0)
 			m_dmrBeaconDuration = (unsigned int)::atoi(value);
 		else if (::strcmp(key, "Id") == 0)
 			m_dmrId = (unsigned int)::atoi(value);
@@ -592,7 +595,22 @@ bool CConf::read()
 			m_dmrCallHang = (unsigned int)::atoi(value);
 		else if (::strcmp(key, "ModeHang") == 0)
 			m_dmrModeHang = (unsigned int)::atoi(value);
-	} else if (section == SECTION_FUSION) {
+		else if (::strcmp(key, "OVCM") == 0)
+			switch(::atoi(value)) {
+				case 1:
+					m_dmrOVCM = DMR_OVCM_RX_ON;
+					break;
+				case 2:
+					m_dmrOVCM = DMR_OVCM_TX_ON;
+					break;
+				case 3:
+					m_dmrOVCM = DMR_OVCM_ON;
+					break;
+				default:
+					m_dmrOVCM = DMR_OVCM_OFF;
+					break;
+			}
+    } else if (section == SECTION_FUSION) {
 		if (::strcmp(key, "Enable") == 0)
 			m_fusionEnabled = ::atoi(value) == 1;
 		else if (::strcmp(key, "LowDeviation") == 0)
@@ -793,6 +811,8 @@ bool CConf::read()
 			m_oledScroll = ::atoi(value) == 1;
 		else if (::strcmp(key, "Rotate") == 0)
 			m_oledRotate = ::atoi(value) == 1;
+		else if (::strcmp(key, "LogoScreensaver") == 0)
+			m_oledLogoScreensaver = ::atoi(value) == 1;
 	} else if (section == SECTION_LCDPROC) {
 		if (::strcmp(key, "Address") == 0)
 			m_lcdprocAddress = value;
@@ -1176,7 +1196,7 @@ bool CConf::getDMREnabled() const
 	return m_dmrEnabled;
 }
 
-bool CConf::getDMRBeacons() const
+DMR_BEACONS CConf::getDMRBeacons() const
 {
 	return m_dmrBeacons;
 }
@@ -1254,6 +1274,11 @@ unsigned int CConf::getDMRTXHang() const
 unsigned int CConf::getDMRModeHang() const
 {
 	return m_dmrModeHang;
+}
+
+DMR_OVCM_TYPES CConf::getDMROVCM() const
+{
+	return m_dmrOVCM;
 }
 
 bool CConf::getFusionEnabled() const
@@ -1705,6 +1730,12 @@ bool CConf::getOLEDRotate() const
 {
 	return m_oledRotate;
 }
+
+bool CConf::getOLEDLogoScreensaver() const
+{
+	return m_oledLogoScreensaver;
+}
+
 
 std::string CConf::getLCDprocAddress() const
 {

@@ -120,7 +120,7 @@ public:
 
   // The DMR section
   bool         getDMREnabled() const;
-  bool         getDMRBeacons() const;
+  DMR_BEACONS  getDMRBeacons() const;
   unsigned int getDMRBeaconInterval() const;
   unsigned int getDMRBeaconDuration() const;
   unsigned int getDMRId() const;
@@ -136,6 +136,7 @@ public:
   unsigned int getDMRCallHang() const;
   unsigned int getDMRTXHang() const;
   unsigned int getDMRModeHang() const;
+  DMR_OVCM_TYPES getDMROVCM() const;
 
   // The System Fusion section
   bool          getFusionEnabled() const;
@@ -255,6 +256,7 @@ public:
   bool           getOLEDInvert() const;
   bool           getOLEDScroll() const;
   bool           getOLEDRotate() const;
+  bool           getOLEDLogoScreensaver() const;
 
   // The LCDproc section
   std::string  getLCDprocAddress() const;
@@ -358,7 +360,7 @@ private:
   unsigned int m_dstarModeHang;
 
   bool         m_dmrEnabled;
-  bool         m_dmrBeacons;
+  DMR_BEACONS  m_dmrBeacons;
   unsigned int m_dmrBeaconInterval;
   unsigned int m_dmrBeaconDuration;
   unsigned int m_dmrId;
@@ -374,6 +376,7 @@ private:
   unsigned int m_dmrCallHang;
   unsigned int m_dmrTXHang;
   unsigned int m_dmrModeHang;
+  DMR_OVCM_TYPES m_dmrOVCM;
 
   bool          m_fusionEnabled;
   bool          m_fusionLowDeviation;
@@ -479,6 +482,7 @@ private:
   bool          m_oledInvert;
   bool          m_oledScroll;
   bool          m_oledRotate;
+  bool          m_oledLogoScreensaver;
 
   std::string  m_lcdprocAddress;
   unsigned int m_lcdprocPort;
